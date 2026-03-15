@@ -1,0 +1,11 @@
+cd Desktop/RMMBDALAB/MapReduce/wordcount
+cat word.txt
+python3 wcmap.py < word.txt
+cat word.txt | python3 wcmap.py | sort -k1,1 | python3 wcred.py
+start-all.sh
+jps
+hadoop fs -mkdir -p /rmm_wordcount
+hadoop fs -copyFromLocal word.txt /rmm_wordcount
+hadoop fs -ls /rmm_wordcount
+hadoop jar /home/hadoop/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar -file wcmap.py -mapper "python3 wcmap.py" -file wcred.py -reducer "python3 wcred.py" -input /rmm_wordcount/word.txt -output /rmm_wordcount/output1
+hadoop fs -cat /rmm_wordcount/output1/part-00000
